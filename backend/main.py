@@ -19,9 +19,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
-def health_check():
-    return {"status": "healthy", "service": "AI Resume Analyzer Backend"}
+@app.api_route("/", methods=["GET", "HEAD"])
+async def root():
+    return {"status": "ok", "message": "AI Resume Analyzer Backend is running."}
 
 def extract_text_from_bytes(file_bytes: bytes) -> str:
     text = ""

@@ -4,7 +4,8 @@ import fitz  # PyMuPDF
 from utils import (
     clean_text, detect_sections, detect_skills,
     calculate_resume_score, calculate_ats_score,
-    suggest_job_roles, generate_improvement_suggestions
+    suggest_job_roles, generate_improvement_suggestions,
+    analyze_quantified_impact
 )
 
 app = FastAPI(title="AI Resume Analyzer API")
@@ -54,6 +55,8 @@ async def analyze_resume(file: UploadFile = File(...)):
         roles = suggest_job_roles(skills)
         improvements = generate_improvement_suggestions(sections, skills, resume_assessment["score"], ats_assessment["score"])
         
+        unquantified_bullets = analyze_quantified_impact(raw_text)
+        
         return {
             "success": True,
             "resume_score": resume_assessment,
@@ -61,6 +64,7 @@ async def analyze_resume(file: UploadFile = File(...)):
             "detected_skills": skills,
             "roles": roles,
             "improvements": improvements,
+            "unquantified_bullets": unquantified_bullets,
             "word_count": len(text.split())
         }
         

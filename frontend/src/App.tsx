@@ -1,14 +1,24 @@
 import { useState, useRef } from 'react';
-import { UploadCloud, FileText, CheckCircle, AlertTriangle, XCircle, Sparkles, Target, Briefcase, Lightbulb } from 'lucide-react';
+import { UploadCloud, FileText, CheckCircle, AlertTriangle, Sparkles, Target, Briefcase, Lightbulb, BarChart } from 'lucide-react';
 
 export default function App() {
     const [file, setFile] = useState<File | null>(null);
     const [loading, setLoading] = useState(false);
+    const [scanMessage, setScanMessage] = useState('');
+    const [scanProgress, setScanProgress] = useState(0);
     const [error, setError] = useState<string | null>(null);
     const [results, setResults] = useState<any>(null);
     const [dragActive, setDragActive] = useState(false);
 
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const scanSteps = [
+        "Initializing Secure AI Engine...",
+        "Extracting PDF text structures...",
+        "Scanning for missing industry keywords...",
+        "Parsing impact action verbs...",
+        "Generating final ATS score..."
+    ];
 
     const handleFile = (selectedFile: File) => {
         if (selectedFile.type !== 'application/pdf') {
@@ -34,6 +44,13 @@ export default function App() {
         setError(null);
         setResults(null);
 
+        // Simulated parsing experience (Trust building)
+        for (let i = 0; i < scanSteps.length; i++) {
+            setScanMessage(scanSteps[i]);
+            setScanProgress(((i + 1) / scanSteps.length) * 100);
+            await new Promise(r => setTimeout(r, 600));
+        }
+
         const formData = new FormData();
         formData.append('file', file);
 
@@ -56,7 +73,7 @@ export default function App() {
             setResults(data);
         } catch (err: any) {
             if (err.message.includes("Failed to fetch")) {
-                setError("Network error: Is the FastAPI backend running on http://127.0.0.1:8000?");
+                setError("Network error: Please ensure your FastAPI backend is running on http://127.0.0.1:8000.");
             } else {
                 setError(err.message);
             }
@@ -65,46 +82,53 @@ export default function App() {
         }
     };
 
-    const getScoreClass = (score: number) => {
-        if (score >= 75) return 'score-good';
-        if (score >= 50) return 'score-avg';
-        return 'score-poor';
-    };
-
     return (
         <div className="container">
-            {/* Header */}
-            <header className="header-layout">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '20px' }}>
-                    <Sparkles color="var(--primary)" size={48} />
-                    <h1 className="hero-title gradient-text">AI Resume Analyzer</h1>
+            {/* Navbar Options */}
+            <nav className="navbar">
+                <div className="nav-logo">
+                    <BarChart color="var(--primary)" size={28} />
+                    ResumeUp AI
                 </div>
-                <p className="hero-subtitle">
-                    Upload your resume and get an instant, privacy-first analysis entirely inside your local machine. Discover skill gaps, job matches, and actionable improvements.
-                </p>
-            </header>
+                {!results && !loading && (
+                    <button className="btn btn-outline" onClick={() => fileInputRef.current?.click()}>
+                        Upload PDF
+                    </button>
+                )}
+            </nav>
 
-            {/* Upload Section */}
+            {/* Hero Section */}
             {!results && !loading && (
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <div className="hero">
+                    <h1>Beat the ATS with Precision AI.</h1>
+                    <p>Instantly check your resume score, discover missing keywords, and get hired faster. Privacy first—processed locally.</p>
+                    <div className="trust-badges">
+                        <span><CheckCircle size={16} color="var(--success)" /> Local Engine</span>
+                        <span><CheckCircle size={16} color="var(--success)" /> PDF Parsing</span>
+                        <span><CheckCircle size={16} color="var(--success)" /> ATS Optimization</span>
+                    </div>
+                </div>
+            )}
+
+            {/* Upload Zone */}
+            {!results && !loading && (
+                <div className="upload-card">
                     <div
-                        className={`glass-panel upload-container ${dragActive ? 'drag-active' : ''}`}
+                        className={`dropzone ${dragActive ? 'active' : ''}`}
                         onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
                         onDragLeave={() => setDragActive(false)}
                         onDrop={handleDrop}
                         onClick={(e) => {
-                            // Only trigger file click if they didn't click inside a button
                             if ((e.target as HTMLElement).tagName !== 'BUTTON') {
                                 fileInputRef.current?.click();
                             }
                         }}
-                        style={{ width: '100%' }}
                     >
-                        <UploadCloud className="upload-icon" />
-                        <h2 style={{ fontSize: '1.5rem', fontWeight: 600 }}>
-                            {file ? file.name : "Drag & Drop your PDF Resume here"}
-                        </h2>
-                        <p style={{ color: 'var(--text-muted)' }}>or click to browse files</p>
+                        <UploadCloud size={48} color="var(--primary)" style={{ marginBottom: '16px' }} />
+                        <h3 style={{ fontSize: '1.25rem', marginBottom: '8px' }}>
+                            {file ? file.name : "Drag & Drop your Resume"}
+                        </h3>
+                        <p style={{ color: 'var(--text-muted)' }}>Only PDF files supported</p>
 
                         <input
                             type="file"
@@ -115,27 +139,19 @@ export default function App() {
                         />
                     </div>
 
-                    {/* Render buttons outside the sensitive click zone */}
                     {file && (
-                        <div style={{ display: 'flex', gap: '15px', marginTop: '20px' }}>
-                            <button
-                                className="btn-primary"
-                                onClick={() => processResume()}
-                            >
-                                Analyze Now
+                        <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', marginTop: '30px' }}>
+                            <button className="btn btn-primary" onClick={(e) => { e.stopPropagation(); processResume(); }}>
+                                <Sparkles size={18} /> Run AI Scan
                             </button>
-                            <button
-                                className="btn-primary"
-                                style={{ background: 'transparent', border: '1px solid var(--text-muted)' }}
-                                onClick={() => setFile(null)}
-                            >
-                                Clear File
+                            <button className="btn btn-outline" onClick={(e) => { e.stopPropagation(); setFile(null); }}>
+                                Cancel
                             </button>
                         </div>
                     )}
 
                     {error && (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--accent-red)', marginTop: '20px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', color: 'var(--danger)', marginTop: '24px' }}>
                             <AlertTriangle size={20} />
                             <span>{error}</span>
                         </div>
@@ -143,116 +159,116 @@ export default function App() {
                 </div>
             )}
 
-            {/* Loading State */}
+            {/* Loading (ATS Scan Mode) */}
             {loading && (
-                <div className="glass-panel" style={{ padding: '60px', textAlign: 'center' }}>
-                    <div className="spinner"></div>
-                    <h3 style={{ marginTop: '30px', color: 'var(--text-main)', fontSize: '1.2rem' }}>Extracting & Analyzing...</h3>
-                    <p style={{ color: 'var(--text-muted)', marginTop: '10px' }}>Running local heuristics and matching roles.</p>
+                <div className="scan-container">
+                    <Target size={48} color="var(--primary)" style={{ marginBottom: '20px' }} />
+                    <h2>Analyzing your Resume</h2>
+                    <p style={{ color: 'var(--text-muted)', marginTop: '10px' }}>{scanMessage}</p>
+                    <div className="progress-bar-bg">
+                        <div className="progress-bar-fill" style={{ width: `${scanProgress}%` }}></div>
+                    </div>
                 </div>
             )}
 
             {/* Results Dashboard */}
             {results && !loading && (
-                <div style={{ animation: 'fadeInUp 0.6s ease-out forwards' }}>
+                <div className="dashboard">
 
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-                        <h2 className="gradient-text" style={{ fontSize: '2rem' }}>Analysis Results</h2>
-                        <button className="btn-primary" onClick={() => { setResults(null); setFile(null); }}>
-                            Upload Another
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
+                        <h2>Overview & Insights</h2>
+                        <button className="btn btn-primary" onClick={() => { setResults(null); setFile(null); }}>
+                            Upload New Resume
                         </button>
                     </div>
 
-                    <div className="results-grid">
-                        {/* Resume Score */}
-                        <div className="glass-panel score-card">
-                            <FileText size={32} color="var(--primary)" style={{ marginBottom: '15px' }} />
-                            <div className="score-title">Resume Score</div>
-                            <div className={`score-value ${getScoreClass(results.resume_score.score)}`}>
-                                {results.resume_score.score}<span style={{ fontSize: '1.5rem', color: 'var(--text-muted)' }}>/100</span>
+                    <div className="metrics-grid">
+                        <div className="metric-card">
+                            <FileText size={48} color={results.resume_score.score >= 75 ? 'var(--success)' : 'var(--warning)'} />
+                            <div>
+                                <div className={`m-value ${results.resume_score.score >= 75 ? 'text-success' : 'text-warning'}`}>
+                                    {results.resume_score.score}
+                                </div>
+                                <div className="m-label">Structure Score (0-100)</div>
                             </div>
-                            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Heuristic structure evaluation</p>
                         </div>
 
-                        {/* ATS Score */}
-                        <div className="glass-panel score-card">
-                            <Target size={32} color="var(--primary-alt)" style={{ marginBottom: '15px' }} />
-                            <div className="score-title">ATS-Style Score</div>
-                            <div className={`score-value ${getScoreClass(results.ats_score.score)}`}>
-                                {results.ats_score.score}<span style={{ fontSize: '1.5rem', color: 'var(--text-muted)' }}>/100</span>
+                        <div className="metric-card">
+                            <Target size={48} color={results.ats_score.score >= 75 ? 'var(--success)' : 'var(--warning)'} />
+                            <div>
+                                <div className={`m-value ${results.ats_score.score >= 75 ? 'text-success' : 'text-warning'}`}>
+                                    {results.ats_score.score}
+                                </div>
+                                <div className="m-label">ATS Optimization (0-100)</div>
                             </div>
-                            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Keyword & formatting estimate</p>
                         </div>
                     </div>
 
-                    {/* Details Section */}
-                    <div className="results-grid" style={{ marginTop: '24px' }}>
-
-                        {/* Skills & Categories */}
-                        <div className="glass-panel card-section">
-                            <div className="section-title">
-                                <CheckCircle color="var(--accent-green)" />
-                                Detected Skills
+                    <div className="details-grid">
+                        <div className="panel">
+                            <div className="panel-header">
+                                <Briefcase color="var(--primary)" /> Top Industry Matches
                             </div>
-                            {results.detected_skills.length > 0 ? (
-                                <div className="badge-container">
-                                    {results.detected_skills.map((skill: string, idx: number) => (
-                                        <span key={idx} className="badge badge-skill">{skill}</span>
+
+                            {results.roles.length > 0 ? (
+                                <div>
+                                    {results.roles.slice(0, 3).map((role: any, idx: number) => (
+                                        <div key={idx} style={{ marginBottom: '24px' }}>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+                                                <h3 style={{ fontSize: '1.1rem' }}>{role.role}</h3>
+                                                <span style={{ color: 'var(--primary)', fontWeight: 800 }}>{role.match_percentage}% Match</span>
+                                            </div>
+
+                                            {role.missing_skills.length > 0 ? (
+                                                <div>
+                                                    <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '8px' }}>Missing Keywords to beat the ATS:</p>
+                                                    <div className="pills">
+                                                        {role.missing_skills.map((skill: string, idx: number) => (
+                                                            <span key={idx} className="pill pill-danger">{skill}</span>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <p className="text-success" style={{ fontWeight: 600 }}>Perfect match! No missing core keywords.</p>
+                                            )}
+                                        </div>
                                     ))}
                                 </div>
                             ) : (
-                                <p style={{ color: 'var(--text-muted)' }}>No skills strongly matched our dictionaries.</p>
+                                <p className="text-muted">Not enough skills detected to determine a strong industry match.</p>
                             )}
                         </div>
 
-                        {/* Improvements */}
-                        <div className="glass-panel card-section">
-                            <div className="section-title">
-                                <Lightbulb color="var(--accent-amber)" />
-                                Actionable Improvements
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                            <div className="panel" style={{ padding: '24px' }}>
+                                <div className="panel-header" style={{ marginBottom: '16px' }}>
+                                    <CheckCircle color="var(--success)" /> Detected Strengths
+                                </div>
+                                <div className="pills">
+                                    {results.detected_skills.length > 0 ? (
+                                        results.detected_skills.map((skill: string, idx: number) => (
+                                            <span key={idx} className="pill pill-primary">{skill}</span>
+                                        ))
+                                    ) : (
+                                        <span className="text-muted">No specific hard skills detected.</span>
+                                    )}
+                                </div>
                             </div>
-                            <div>
-                                {results.improvements.map((imp: string, idx: number) => (
-                                    <div key={idx} className="improvement-item">
-                                        <AlertTriangle className="improvement-icon" size={18} />
-                                        <span>{imp}</span>
-                                    </div>
-                                ))}
+
+                            <div className="panel" style={{ padding: '24px' }}>
+                                <div className="panel-header" style={{ marginBottom: '16px' }}>
+                                    <Lightbulb color="var(--warning)" /> Expert Suggestions
+                                </div>
+                                <ul className="checklist">
+                                    {results.improvements.map((imp: string, idx: number) => (
+                                        <li key={idx}>
+                                            <AlertTriangle color="var(--warning)" size={18} style={{ flexShrink: 0, marginTop: '2px' }} />
+                                            <span>{imp}</span>
+                                        </li>
+                                    ))}
+                                </ul>
                             </div>
                         </div>
-
-                    </div>
-
-                    {/* Job Roles */}
-                    <div className="glass-panel card-section" style={{ marginTop: '24px' }}>
-                        <div className="section-title">
-                            <Briefcase color="var(--primary)" />
-                            Top Role Matches & Missing Skills
-                        </div>
-                        {results.roles.length > 0 ? (
-                            <div>
-                                {results.roles.slice(0, 3).map((role: any, idx: number) => (
-                                    <div key={idx} className="role-item">
-                                        <div className="role-header">
-                                            <div className="role-name">{role.role}</div>
-                                            <div className="role-match">{role.match_percentage}% Match</div>
-                                        </div>
-                                        {role.missing_skills.length > 0 ? (
-                                            <div className="badge-container">
-                                                <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginRight: '8px' }}>Gaps:</span>
-                                                {role.missing_skills.map((skill: string, idx: number) => (
-                                                    <span key={idx} className="badge badge-gap">{skill}</span>
-                                                ))}
-                                            </div>
-                                        ) : (
-                                            <span style={{ fontSize: '0.85rem', color: 'var(--accent-green)' }}>No keyword gaps!</span>
-                                        )}
-                                    </div>
-                                ))}
-                            </div>
-                        ) : (
-                            <p style={{ color: 'var(--text-muted)' }}>Not enough skills detected for strong role matches.</p>
-                        )}
                     </div>
 
                 </div>

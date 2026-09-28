@@ -1,0 +1,10 @@
+
+> ai-resume-analyzer-frontend@0.0.0 deploy
+> gh-pages -d dist
+
+ProcessError: fatal: a branch named 'gh-pages' already exists
+
+    at ChildProcess.<anonymous> (C:\Users\acer\Downloads\ai resume builder\AI-Resume-Analyzer\frontend\node_modules\gh-pages\lib\git.js:42:16)
+    at ChildProcess.emit (node:events:518:28)
+    at maybeClose (node:internal/child_process:1101:16)
+    at ChildProcess._handle.onexit (node:internal/child_process:304:5)

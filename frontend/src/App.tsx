@@ -55,7 +55,8 @@ export default function App() {
         formData.append('file', file);
 
         try {
-            const response = await fetch('http://127.0.0.1:8000/api/analyze', {
+            const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
+            const response = await fetch(`${API_URL}/api/analyze`, {
                 method: 'POST',
                 body: formData,
             });
@@ -73,7 +74,7 @@ export default function App() {
             setResults(data);
         } catch (err: any) {
             if (err.message.includes("Failed to fetch")) {
-                setError("Network error: Please ensure your FastAPI backend is running on http://127.0.0.1:8000.");
+                setError(`Network error: Could not reach the backend API.`);
             } else {
                 setError(err.message);
             }

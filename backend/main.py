@@ -18,6 +18,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/")
+def health_check():
+    return {"status": "healthy", "service": "AI Resume Analyzer Backend"}
+
 def extract_text_from_bytes(file_bytes: bytes) -> str:
     text = ""
     try:

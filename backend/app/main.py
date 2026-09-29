@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api import health, analyze
+from app.api import health, analyze, applications
 
 app = FastAPI(
     title="AI Resume Analyzer API",
@@ -20,3 +20,4 @@ app.add_middleware(
 # Mount Routers
 app.include_router(health.router)
 app.include_router(analyze.router, prefix="/api")
+app.include_router(applications.router, prefix="/api/applications")

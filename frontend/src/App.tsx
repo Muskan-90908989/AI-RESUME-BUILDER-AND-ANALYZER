@@ -2,14 +2,15 @@ import { useState } from 'react';
 import { LandingPage } from './features/landing/LandingPage';
 import { Uploader } from './features/analyzer/Uploader';
 import { Dashboard } from './features/results/Dashboard';
+import { ApplicationsTracker } from './features/applications/ApplicationsTracker';
 import { ResumeAnalysisResponse } from './types/analysis';
 import { Button } from './components/ui/Button';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, LayoutDashboard, Briefcase } from 'lucide-react';
 
 const API_BASE_URL = 'https://ai-resume-builder-and-analyzer-d4lm.onrender.com';
 
 function App() {
-    const [view, setView] = useState<'landing' | 'upload' | 'results'>('landing');
+    const [view, setView] = useState<'landing' | 'upload' | 'results' | 'tracker'>('landing');
     const [isUploading, setIsUploading] = useState(false);
     const [analysisData, setAnalysisData] = useState<ResumeAnalysisResponse | null>(null);
     const [errorDetails, setErrorDetails] = useState<string | null>(null);
@@ -45,8 +46,21 @@ function App() {
         <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
 
             {/* Dynamic View Configuration */}
+            {view !== 'landing' && (
+                <header style={{ display: 'flex', justifyContent: 'center', gap: '16px', padding: '16px', borderBottom: '1px solid var(--color-border)', background: 'var(--color-bg)' }}>
+                    <Button variant={view === 'tracker' ? 'outline' : 'primary'} onClick={() => setView('upload')} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <LayoutDashboard size={18} /> Analyzer
+                    </Button>
+                    <Button variant={view === 'tracker' ? 'primary' : 'outline'} onClick={() => setView('tracker')} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Briefcase size={18} /> Job Tracker
+                    </Button>
+                </header>
+            )}
+
             <main style={{ flex: 1 }}>
                 {view === 'landing' && <LandingPage onAnalyzeStart={() => setView('upload')} />}
+
+                {view === 'tracker' && <ApplicationsTracker />}
 
                 {view === 'upload' && (
                     <div style={{ maxWidth: '600px', margin: '0 auto', padding: 'var(--space-64) var(--space-16)' }}>

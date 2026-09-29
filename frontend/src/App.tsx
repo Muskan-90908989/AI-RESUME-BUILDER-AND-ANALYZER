@@ -36,6 +36,7 @@ function App() {
             setView('results');
         } catch (err: any) {
             setErrorDetails(err.message || 'Network error occurred during API contact.');
+        } finally {
             setIsUploading(false);
         }
     };

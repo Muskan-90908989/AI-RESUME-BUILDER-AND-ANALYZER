@@ -1,9 +1,0 @@
-@echo off
-echo Starting AI Resume Analyzer (B.Tech Architecture)...
-echo Starting Backend Service on Port 8000...
-start cmd /k "cd backend && call venv\Scripts\activate && python -m uvicorn main:app --port 8000 --reload"
-
-echo Starting Frontend UI Service...
-start cmd /k "cd frontend && npm run dev"
-
-echo Deploying Local Windows. Close the command windows to stop the servers.

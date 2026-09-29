@@ -76,8 +76,8 @@ export const Dashboard: React.FC<DashboardProps> = ({ data }) => {
                         )}
                         {data.formatting_analysis.is_suspiciously_long && (
                             <div style={{ color: 'var(--color-danger)', fontSize: '13px', marginTop: '4px' }}>
-                                <AlertTriangle size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '4px' }} /> 
-                                Resume is too long (>4 pages). ATS systems and recruiters strongly prefer 1-2 pages maximum.
+                                <AlertTriangle size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '4px' }} />
+                                Resume is too long (more than 4 pages). ATS systems and recruiters strongly prefer 1-2 pages maximum.
                             </div>
                         )}
                     </div>

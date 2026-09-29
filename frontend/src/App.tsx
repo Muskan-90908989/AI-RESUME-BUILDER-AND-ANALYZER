@@ -6,7 +6,7 @@ import { ResumeAnalysisResponse } from './types/analysis';
 import { Button } from './components/ui/Button';
 import { ArrowLeft } from 'lucide-react';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://ai-resume-builder-and-analyzer-d4lm.onrender.com';
 
 function App() {
     const [view, setView] = useState<'landing' | 'upload' | 'results'>('landing');

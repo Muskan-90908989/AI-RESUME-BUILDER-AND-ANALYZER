@@ -5,7 +5,7 @@ import { Badge } from '../../components/ui/Badge';
 import { ScoreGauge } from '../../components/ui/ScoreGauge';
 import { JobMatchResponse } from '../../types/analysis';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://ai-resume-builder-and-analyzer-d4lm.onrender.com';
 
 interface JobMatchProps {
     resumeText: string;

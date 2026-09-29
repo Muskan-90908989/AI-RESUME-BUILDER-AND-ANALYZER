@@ -14,6 +14,20 @@ class RoleMatch(BaseModel):
     matched_skills: int
     missing_skills: List[str]
 
+class ContactInfo(BaseModel):
+    has_email: bool
+    has_phone: bool
+    has_linkedin: bool
+
+class LanguageAnalysis(BaseModel):
+    action_verbs: List[str]
+    filler_words: List[str]
+
+class FormattingAnalysis(BaseModel):
+    estimated_pages: float
+    is_suspiciously_short: bool
+    is_suspiciously_long: bool
+
 class ResumeAnalysisResponse(BaseModel):
     raw_text: str
     sections_found: Dict[str, bool]
@@ -23,6 +37,9 @@ class ResumeAnalysisResponse(BaseModel):
     role_suggestions: List[RoleMatch]
     improvement_suggestions: List[str]
     quantifying_impact_issues: List[str]
+    contact_info: ContactInfo
+    language_analysis: LanguageAnalysis
+    formatting_analysis: FormattingAnalysis
 
 class JobMatchRequest(BaseModel):
     resume_text: str

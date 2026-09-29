@@ -13,6 +13,9 @@ from app.services.role_service import suggest_job_roles
 from app.services.recommendation_service import generate_improvement_suggestions
 from app.services.bullet_service import analyze_quantified_impact
 from app.services.jd_match_service import match_jd_to_resume
+from app.services.contact_service import detect_contact_info
+from app.services.language_service import analyze_language
+from app.services.formatting_service import analyze_formatting
 from app.schemas.analysis import JobMatchRequest, JobMatchResponse
 
 router = APIRouter()
@@ -45,6 +48,9 @@ async def analyze_resume(file: UploadFile = File(...)):
         role_suggestions = suggest_job_roles(detected_skills)
         suggestions = generate_improvement_suggestions(sections_found, detected_skills, resume_score["score"], ats_score["score"])
         unquantified_bullets = analyze_quantified_impact(raw_text)
+        contact_info = detect_contact_info(raw_text)
+        language_metrics = analyze_language(raw_text)
+        format_metrics = analyze_formatting(raw_text)
 
         return ResumeAnalysisResponse(
             raw_text=cleaned_text,
@@ -54,7 +60,10 @@ async def analyze_resume(file: UploadFile = File(...)):
             ats_score=ats_score,
             role_suggestions=role_suggestions,
             improvement_suggestions=suggestions,
-            quantifying_impact_issues=unquantified_bullets
+            quantifying_impact_issues=unquantified_bullets,
+            contact_info=contact_info,
+            language_analysis=language_metrics,
+            formatting_analysis=format_metrics
         )
         
     except Exception as e:

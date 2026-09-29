@@ -41,6 +41,66 @@ export const Dashboard: React.FC<DashboardProps> = ({ data }) => {
                 </Card>
             </div>
 
+            {/* NEW ADVANCED ATS METRICS */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 'var(--space-24)', marginBottom: 'var(--space-32)' }}>
+                <Card>
+                    <h3 style={{ marginBottom: 'var(--space-16)' }}>Contact Information</h3>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            {data.contact_info.has_email ? <CheckCircle2 size={16} color="var(--color-success)" /> : <XCircle size={16} color="var(--color-danger)" />}
+                            <span>Email Address</span>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            {data.contact_info.has_phone ? <CheckCircle2 size={16} color="var(--color-success)" /> : <XCircle size={16} color="var(--color-danger)" />}
+                            <span>Phone Number</span>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            {data.contact_info.has_linkedin ? <CheckCircle2 size={16} color="var(--color-success)" /> : <AlertTriangle size={16} color="var(--color-warning)" />}
+                            <span>LinkedIn Profile</span>
+                        </div>
+                    </div>
+                </Card>
+
+                <Card>
+                    <h3 style={{ marginBottom: 'var(--space-16)' }}>Formatting & Density</h3>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <span>Estimated Pages:</span>
+                            <strong>{data.formatting_analysis.estimated_pages}</strong>
+                        </div>
+                        {data.formatting_analysis.is_suspiciously_short && (
+                            <div style={{ color: 'var(--color-danger)', fontSize: '13px', marginTop: '4px' }}>
+                                <AlertTriangle size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '4px' }} />
+                                Resume is extremely short. Ensure you include relevant projects and experience.
+                            </div>
+                        )}
+                        {data.formatting_analysis.is_suspiciously_long && (
+                            <div style={{ color: 'var(--color-danger)', fontSize: '13px', marginTop: '4px' }}>
+                                <AlertTriangle size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '4px' }} /> 
+                                Resume is too long (>4 pages). ATS systems and recruiters strongly prefer 1-2 pages maximum.
+                            </div>
+                        )}
+                    </div>
+                </Card>
+
+                <Card>
+                    <h3 style={{ marginBottom: 'var(--space-16)' }}>Language Syntax</h3>
+                    <div style={{ marginBottom: 'var(--space-12)' }}>
+                        <span style={{ fontSize: '13px', color: 'var(--color-muted)', display: 'block', marginBottom: '4px' }}>Strong Action Verbs ({data.language_analysis.action_verbs.length})</span>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+                            {data.language_analysis.action_verbs.map(v => <Badge variant="success" key={v}>{v}</Badge>)}
+                            {data.language_analysis.action_verbs.length === 0 && <span style={{ fontSize: '12px' }}>None detected. Use verbs like "Architected" or "Deployed".</span>}
+                        </div>
+                    </div>
+                    <div>
+                        <span style={{ fontSize: '13px', color: 'var(--color-danger)', display: 'block', marginBottom: '4px' }}>Weak Filler Words ({data.language_analysis.filler_words.length})</span>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+                            {data.language_analysis.filler_words.map(v => <Badge variant="warning" key={v}>{v}</Badge>)}
+                        </div>
+                    </div>
+                </Card>
+            </div>
+
             <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--space-24)', marginBottom: 'var(--space-32)' }}>
                 <Card>
                     <h3 style={{ marginBottom: 'var(--space-16)', display: 'flex', alignItems: 'center', gap: '8px' }}>

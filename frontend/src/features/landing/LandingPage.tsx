@@ -46,15 +46,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onAnalyzeStart }) => {
             </div>
 
             {/* Basic Feature Grid */}
-            <section style={{ marginTop: 'var(--space-64)', paddingBottom: 'var(--space-64)' }}>
+            <section className="animate-slide-up" style={{ marginTop: 'var(--space-64)', paddingBottom: 'var(--space-64)' }}>
                 <h3 style={{ textAlign: 'center', fontSize: '32px', marginBottom: 'var(--space-48)' }}>Engineered for Results</h3>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 'var(--space-32)' }}>
-                    <Card>
+                    <Card className="glass-panel hover-lift">
                         <BarChart2 color="var(--color-primary)" size={24} style={{ marginBottom: '16px' }} />
                         <h4>Transparent Resume Score</h4>
                         <p style={{ marginTop: '8px' }}>A strict weighted scoring model measuring your structure and readability without arbitrary AI numbers.</p>
                     </Card>
-                    <Card>
+                    <Card className="glass-panel hover-lift">
                         <FileText color="var(--color-primary)" size={24} style={{ marginBottom: '16px' }} />
                         <h4>Job Matching</h4>
                         <p style={{ marginTop: '8px' }}>Paste a job description to get a Keyword Matrix comparing what you have versus what they want.</p>

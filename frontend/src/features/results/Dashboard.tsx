@@ -134,7 +134,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data }) => {
                     <h3 style={{ marginBottom: 'var(--space-16)' }}>Detected Sections</h3>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                         {Object.entries(data.sections_found).map(([sec, found]) => (
-                            <div key={sec} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <div key={sec} style={{ display: 'flex', alignItems: 'center', gap: '8px' }} title={found ? `Source: ${found.source_heading} (Line ${found.line_num})` : 'Missing'}>
                                 {found ? <CheckCircle2 size={16} color="var(--color-success)" /> : <XCircle size={16} color="var(--color-danger)" />}
                                 <span style={{ color: found ? 'var(--color-text)' : 'var(--color-muted)', textDecoration: found ? 'none' : 'line-through' }}>{sec}</span>
                             </div>
@@ -145,7 +145,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data }) => {
                 <Card>
                     <h3 style={{ marginBottom: 'var(--space-16)' }}>Detected Core Skills ({data.detected_skills.length})</h3>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                        {data.detected_skills.map(s => <Badge key={s} variant="primary">{s}</Badge>)}
+                        {data.detected_skills.map(s => <Badge key={s.skill} variant="primary" title={s.evidence}>{s.skill}</Badge>)}
                         {data.detected_skills.length === 0 && <span style={{ color: 'var(--color-muted)' }}>No standard skills detected.</span>}
                     </div>
                 </Card>

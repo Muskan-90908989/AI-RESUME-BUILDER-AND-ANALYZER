@@ -1,12 +1,31 @@
 from pydantic import BaseModel, Field
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Optional
+
+class ParserMetadata(BaseModel):
+    page_count: int
+    character_count: int
+    word_count: int
+    extractability: int
+    parser_warnings: List[str]
+
+class SectionData(BaseModel):
+    source_heading: str
+    confidence: str
+    line_num: int
+
+class SkillEvidence(BaseModel):
+    skill: str
+    category: str
+    evidence: str
 
 class ScoreDetails(BaseModel):
     score: int
+    rules_version: str
     details: List[str]
 
 class ATSScoreDetails(BaseModel):
     score: int
+    rules_version: str
 
 class RoleMatch(BaseModel):
     role: str
@@ -30,8 +49,9 @@ class FormattingAnalysis(BaseModel):
 
 class ResumeAnalysisResponse(BaseModel):
     raw_text: str
-    sections_found: Dict[str, bool]
-    detected_skills: List[str]
+    parser_metadata: ParserMetadata
+    sections_found: Dict[str, Optional[SectionData]]
+    detected_skills: List[SkillEvidence]
     resume_score: ScoreDetails
     ats_score: ATSScoreDetails
     role_suggestions: List[RoleMatch]

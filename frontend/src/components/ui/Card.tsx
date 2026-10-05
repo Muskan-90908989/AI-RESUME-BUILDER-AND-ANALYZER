@@ -18,7 +18,7 @@ export const Card: React.FC<CardProps> = ({ children, className = '', noPadding 
     };
 
     return (
-        <div style={{ ...defaultStyles, ...style }} className={className}>
+        <div style={{ ...defaultStyles, ...style }} className={`glass-panel hover-lift ${className}`}>
             {children}
         </div>
     );

@@ -22,16 +22,30 @@ export interface FormattingAnalysis {
     is_suspiciously_long: boolean;
 }
 
+export interface SectionData {
+    source_heading: string;
+    confidence: string;
+    line_num: number;
+}
+
+export interface SkillEvidence {
+    skill: string;
+    category: string;
+    evidence: string;
+}
+
 export interface ResumeAnalysisResponse {
     raw_text: string;
-    sections_found: Record<string, boolean>;
-    detected_skills: string[];
+    sections_found: Record<string, SectionData | null>;
+    detected_skills: SkillEvidence[];
     resume_score: {
         score: number;
+        rules_version: string;
         details: string[];
     };
     ats_score: {
         score: number;
+        rules_version: string;
     };
     role_suggestions: RoleMatch[];
     improvement_suggestions: string[];

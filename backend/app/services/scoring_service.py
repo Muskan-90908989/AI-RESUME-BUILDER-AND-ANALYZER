@@ -61,4 +61,4 @@ def calculate_resume_score(text: str, sections_found: dict, detected_skills: lis
     else:
         details.append("Resume Length: Too short (0/10)")
         
-    return {"score": min(score, 100), "details": details}
+    return {"score": min(score, 100), "rules_version": "1.0.0", "details": details}

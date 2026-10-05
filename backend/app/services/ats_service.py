@@ -18,4 +18,4 @@ def calculate_ats_score(text: str, sections_found: dict, detected_skills: list) 
     if word_count < 100:
         score -= 20
         
-    return {"score": max(min(score, 100), 0)}
+    return {"score": max(min(score, 100), 0), "rules_version": "1.0.0"}

@@ -52,6 +52,7 @@ export const Uploader: React.FC<UploaderProps> = ({ onFileSelect, isLoading = fa
 
     return (
         <div
+            className="glass-panel hover-lift animate-fade-in"
             style={{
                 border: `2px dashed ${isHovering ? 'var(--color-primary)' : 'var(--color-border)'}`,
                 borderRadius: 'var(--radius-12)',

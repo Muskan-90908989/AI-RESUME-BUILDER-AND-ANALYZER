@@ -3,9 +3,10 @@ import React from 'react';
 interface BadgeProps {
     children: React.ReactNode;
     variant?: 'neutral' | 'success' | 'warning' | 'danger' | 'primary';
+    title?: string;
 }
 
-export const Badge: React.FC<BadgeProps> = ({ children, variant = 'neutral' }) => {
+export const Badge: React.FC<BadgeProps> = ({ children, variant = 'neutral', title }) => {
     const baseStyles: React.CSSProperties = {
         display: 'inline-flex',
         alignItems: 'center',
@@ -14,7 +15,8 @@ export const Badge: React.FC<BadgeProps> = ({ children, variant = 'neutral' }) =
         fontSize: '12px',
         fontWeight: 600,
         textTransform: 'uppercase',
-        letterSpacing: '0.5px'
+        letterSpacing: '0.5px',
+        cursor: title ? 'help' : 'default'
     };
 
     const variants = {
@@ -26,7 +28,7 @@ export const Badge: React.FC<BadgeProps> = ({ children, variant = 'neutral' }) =
     };
 
     return (
-        <span style={{ ...baseStyles, ...variants[variant] }}>
+        <span style={{ ...baseStyles, ...variants[variant] }} title={title}>
             {children}
         </span>
     );

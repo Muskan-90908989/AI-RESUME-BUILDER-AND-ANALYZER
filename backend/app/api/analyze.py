@@ -1,9 +1,9 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from fastapi.responses import JSONResponse
-from app.schemas.analysis import ResumeAnalysisResponse
+from app.schemas.analysis import ResumeAnalysisResponse, ParserMetadata
 import traceback
 
-from app.services.pdf_service import extract_text_from_pdf
+from app.services.pdf_service import extract_pdf_metadata_and_text
 from app.services.text_service import clean_text
 from app.services.section_service import detect_sections
 from app.services.skill_service import detect_skills
@@ -30,13 +30,15 @@ async def analyze_resume(file: UploadFile = File(...)):
         raise HTTPException(status_code=400, detail="Invalid MIME type. Document must be PDF.")
         
     try:
-        raw_text = extract_text_from_pdf(file.file)
-        if not raw_text or len(raw_text) < 50:
+        pdf_data = extract_pdf_metadata_and_text(file.file)
+        raw_text = pdf_data["text"]
+        
+        if not raw_text or len(raw_text) < 50 or pdf_data["extractability"] == 0:
             return JSONResponse(status_code=400, content={
                 "error": {
                     "code": "PDF_TEXT_EXTRACTION_FAILED",
                     "message": "Unable to extract readable text from this PDF.",
-                    "details": "The PDF may be scanned or image-only."
+                    "details": pdf_data["parser_warnings"][0] if pdf_data["parser_warnings"] else "The PDF may be scanned or image-only."
                 }
             })
             
@@ -52,8 +54,17 @@ async def analyze_resume(file: UploadFile = File(...)):
         language_metrics = analyze_language(raw_text)
         format_metrics = analyze_formatting(raw_text)
 
+        parser_meta = ParserMetadata(
+            page_count=pdf_data["page_count"],
+            character_count=pdf_data["character_count"],
+            word_count=pdf_data["word_count"],
+            extractability=pdf_data["extractability"],
+            parser_warnings=pdf_data["parser_warnings"]
+        )
+
         return ResumeAnalysisResponse(
             raw_text=cleaned_text,
+            parser_metadata=parser_meta,
             sections_found=sections_found,
             detected_skills=detected_skills,
             resume_score=resume_score,

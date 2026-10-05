@@ -2,7 +2,8 @@ from app.rules.roles import ROLE_SKILL_MAPPINGS
 
 def suggest_job_roles(detected_skills: list) -> list:
     """Suggests roles based on matching detected skills with predefined mappings."""
-    detected_skills_lower = [s.lower() for s in detected_skills]
+    # Handle dict objects (SkillEvidence) instead of bare strings
+    detected_skills_lower = [s["skill"].lower() if isinstance(s, dict) else (s.skill.lower() if hasattr(s, "skill") else str(s).lower()) for s in detected_skills]
     
     role_matches = []
     
@@ -35,6 +36,7 @@ def analyze_skill_gaps(detected_skills: list, role: str) -> list:
     if role not in ROLE_SKILL_MAPPINGS:
         return []
         
-    detected_lower = [s.lower() for s in detected_skills]
+    # Handle dict objects (SkillEvidence) instead of bare strings
+    detected_lower = [s["skill"].lower() if isinstance(s, dict) else (s.skill.lower() if hasattr(s, "skill") else str(s).lower()) for s in detected_skills]
     missing = [req for req in ROLE_SKILL_MAPPINGS[role] if req.lower() not in detected_lower]
     return missing
